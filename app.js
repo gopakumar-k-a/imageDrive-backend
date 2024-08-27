@@ -7,10 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import ErrorResponse from "./utils/errorResponse.js";
 import verifyJWT from "./middleware/jwtVerification.js";
-import path from "path";
-import { fileURLToPath } from "url";
 import imageRoutes from "./routes/imageRoutes.js";
-import fs from "fs";
 
 const app = express();
 
@@ -24,13 +21,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use("/public", express.static(path.join(__dirname, "public")));
-const uploadsDir = path.join(__dirname, "public/uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
 app.get("/", (req, res) => {
   res.send("Server is up and running");
 });
