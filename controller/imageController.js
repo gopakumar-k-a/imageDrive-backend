@@ -21,11 +21,9 @@ const imageController = () => {
   });
   const uploadImages = asyncHandler(async (req, res) => {
     const { userId } = req.user;
-    console.log("req.body ", req.body);
 
     const images = req.files;
     const { titles } = req.body;
-    console.log("images ", images);
     if (!images || images.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
     }
@@ -68,7 +66,6 @@ const imageController = () => {
     if (!uploads) {
       throw new ErrorResponse("no image uploads", 409);
     }
-    console.log("uploads ", uploads);
 
     const myUploads = await Promise.all(
       uploads.images.map(async (file) => {
@@ -87,7 +84,6 @@ const imageController = () => {
       })
     );
 
-    console.log("myUploads ", myUploads);
 
     res
       .status(200)

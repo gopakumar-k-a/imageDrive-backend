@@ -20,14 +20,11 @@ const profileController = () => {
       );
     }
     if (req.user && req.user.userId) {
-      console.log("req.user ", req.user);
       const { userId } = req.user;
 
-      console.log("userid ", userId);
 
       const user = await User.findById(userId);
 
-      console.log("user ", user);
 
       if (user) {
         const isPasswordTrue = await authService.comparePassword(
@@ -35,7 +32,6 @@ const profileController = () => {
           user.password
         );
 
-        console.log("isPasswordTrue ", isPasswordTrue);
 
         if (isPasswordTrue) {
           const hashedNewPassword = await authService.hashPassword(newPassword);
