@@ -13,7 +13,7 @@ const app = express();
 
 connectDB();
 const corsOptions = {
-  origin: envConfig.CLIENT_URL,
+  origin: "*",
   credentials: true,
 };
 
