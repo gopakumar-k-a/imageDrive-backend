@@ -8,9 +8,9 @@ const imageRoutes = () => {
     "/upload-images",
     upload.array("images", 10),
     imageController().uploadImages
-    
-  )
+  );
   router.get("/upload-images", imageController().getUploads);
+  router.patch("/upload-images", imageController().updateImages);
 
   return router;
 };

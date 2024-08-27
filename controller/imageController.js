@@ -6,6 +6,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { envConfig } from "../config/envConfig.js";
@@ -19,7 +20,6 @@ const imageController = () => {
     region: envConfig.BUCKET_REGION,
   });
   const uploadImages = asyncHandler(async (req, res) => {
-
     const { userId } = req.user;
     console.log("req.body ", req.body);
 
@@ -70,7 +70,7 @@ const imageController = () => {
     }
     console.log("uploads ", uploads);
 
-    const imageUrls = await Promise.all(
+    const myUploads = await Promise.all(
       uploads.images.map(async (file) => {
         const getObjectParams = {
           Bucket: envConfig.BUCKET_NAME,
@@ -87,14 +87,51 @@ const imageController = () => {
       })
     );
 
-    console.log("image urls ", imageUrls);
+    console.log("myUploads ", myUploads);
 
-    res.status(200).json({ message: "image upload retrieved successfully" });
+    res
+      .status(200)
+      .json({ message: "image upload retrieved successfully", myUploads });
+  });
+
+  const updateImages = asyncHandler(async (req, res) => {
+    const { updatedImages, removedImages } = req.body;
+    const { userId } = req.user;
+
+    const userImages = await Image.findOne({ userId });
+    if (updatedImages?.length > 0) {
+      const simplifiedImages = updatedImages.map(({ imageName, title }) => ({
+        imageName,
+        title,
+      }));
+
+      if (userImages?.images) {
+        userImages.images = simplifiedImages;
+        await userImages.save();
+      }
+    } else {
+      userImages.images = [];
+      await userImages.save();
+    }
+
+    if (removedImages?.length > 0) {
+      for (let image of removedImages) {
+        const params = {
+          Bucket: envConfig.BUCKET_NAME,
+          Key: image.imageName,
+        };
+
+        const command = new DeleteObjectCommand(params);
+        await s3.send(command);
+      }
+    }
+    res.status(200).json({ message: "images updated successfully" });
   });
 
   return {
     uploadImages,
     getUploads,
+    updateImages,
   };
 };
 

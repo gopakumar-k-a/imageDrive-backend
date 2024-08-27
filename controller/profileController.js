@@ -5,6 +5,7 @@ import ErrorResponse from "../utils/errorResponse.js";
 const profileController = () => {
   const resetPassword = asyncHandler(async (req, res) => {
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    
     if (newPassword != confirmNewPassword) {
       throw new ErrorResponse(
         "new password and confirm password must be same ",
