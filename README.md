@@ -39,4 +39,5 @@ To set up the backend, follow these steps:
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/gopakumar-k-a/imageDrive-frontend.git
-   cd server
+   cd imageDrive-backend
+
